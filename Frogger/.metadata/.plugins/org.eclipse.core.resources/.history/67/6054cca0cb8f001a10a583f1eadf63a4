@@ -1,0 +1,12 @@
+//import java.awt.Rectangle;
+
+public class Wall {
+	Brick[][] brickWall ;
+	int length, height;
+	
+	public Wall(int rows, int columns) {
+		brickWall = new Brick[rows][columns];
+		int length = rows;
+		int height = columns;
+	}
+}
