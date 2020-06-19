@@ -8,9 +8,19 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class froggerComp extends GameDriverV3 implements KeyListener {
-
-	private static final long serialVersionUID = 1L;
-	int gameState = 0, frogWidth, frogHeight, framePos = 0, timer = 0, timeDelay = 10;
+	//Different states
+	final static int STATE_HOME = 0;
+	final static int STATE_START = 1;
+	final static int STATE_INSTRUCTION = 2;
+	final static int STATE_DEATH = 3;
+	
+	//Car direction and type
+	final static int UP_DIRECTION = 0;
+	final static int DOWN_DIRECTION = 1;
+	final static int FAST_CAR = 0;
+	final static int TRUCK_CAR = 1;
+	
+	int gameState = STATE_HOME, frogWidth, frogHeight, framePos = 0, timer = 0, timeDelay = 10;
 	Rectangle background = new Rectangle(0, 0, 1830, 700), backgroundScore = new Rectangle(0, 700, 1830, 200);
 	Random randomizer = new Random();
 	Font impactSmall = new Font("Impact", 100, 100);
@@ -32,7 +42,8 @@ public class froggerComp extends GameDriverV3 implements KeyListener {
 		stringName[0] = "froggerMusic.wav";
 		sound = new SoundDriver(stringName);
 		sound.loop(0);
-
+		
+		//Add sprites to all objects
 		mainFrog = new frog();
 		lanes = new Lane[16];
 		frog = this.addImage("frogBig.png");
@@ -40,13 +51,12 @@ public class froggerComp extends GameDriverV3 implements KeyListener {
 		wood = this.addImage("Wood.jpg");
 		cars = this.addImage("Cars.png");
 		frogScreen = new BufferedImage[5];
-
 		truckUp = this.addImage("Truck.png");
 		truckDown = this.addImage("truckDown.png");
-
+		
+		//Get frog sprite
 		frogWidth = frog.getWidth() / 5;
 		frogHeight = frog.getHeight() / 8;
-
 		frogSpriteRight = smallFrog.getSubimage(0, smallFrog.getHeight() / 8 * 2, smallFrog.getWidth() / 5,
 				smallFrog.getHeight() / 8 );
 		frogSpriteLeft = smallFrog.getSubimage(0, smallFrog.getHeight() / 8 * 6, smallFrog.getWidth() / 5,
@@ -54,23 +64,25 @@ public class froggerComp extends GameDriverV3 implements KeyListener {
 		frogSpriteUp = smallFrog.getSubimage(0, 0, smallFrog.getWidth() / 5, smallFrog.getHeight() / 8);
 		frogSpriteDown = smallFrog.getSubimage(0, smallFrog.getHeight() / 8 * 4, smallFrog.getWidth() / 5,
 				smallFrog.getHeight() / 8);
-
+		
+		//Get log images
 		woodSmall = wood.getSubimage(50, 125, 50, 125);
 		woodMedium = wood.getSubimage(50, 150, 50, 150);
 		woodLarge = wood.getSubimage(50, 175, 50, 175);
-
+		
+		//Get car images
 		carSmallDown = cars.getSubimage(cars.getWidth() / 5 * 0, cars.getHeight() / 8 * 0, cars.getWidth() / 5 - 30,
 				cars.getHeight() / 8);
 		carSmallUp = cars.getSubimage(cars.getWidth() / 5 * 4 + 30, cars.getHeight() / 8 * 1, cars.getWidth() / 5 - 30,
 				cars.getHeight() / 8);
-
+		
+		//Frog on home screen
 		for (int i = 0; i < 5; i++) {
 			frogScreen[i] = frog.getSubimage(frogWidth * i, frogHeight * 2, frogWidth, frogHeight);
 		}
 	}
 
 	public void start() {
-
 		mainFrog = new frog();
 		lanes = new Lane[16];
 		this.addKeyListener(mainFrog);
@@ -86,7 +98,7 @@ public class froggerComp extends GameDriverV3 implements KeyListener {
 
 	public void draw(Graphics2D win) {
 		// TODO Auto-generated method stub
-		if (gameState == 0) {
+		if (gameState == STATE_HOME) {
 			win.setColor(Color.green);
 			win.fill(background);
 			win.fill(backgroundScore);
@@ -108,52 +120,51 @@ public class froggerComp extends GameDriverV3 implements KeyListener {
 
 		}
 
-		if (gameState == 1) {
+		if (gameState == STATE_START) {
 			win.setColor(Color.white);
 			win.fill(background);
 			win.setColor(Color.black);
-
 			win.drawLine(0, 700, 1830, 700);
-
-			for (int i = 0; i < 16; i++) { // drawing lanes
+			
+			//Draw each lane
+			for (int i = 0; i < 16; i++) { 
 				lanes[i].draw(win);
 			}
 			win.setColor(Color.white);
 
 			for (int i = 0; i < 16; i++) {
+				//Draw logs if lane is river
 				if (lanes[i].laneType == 1) {
 					win.drawImage(woodSmall, null, (int) lanes[i].log.log1.getX(), (int) lanes[i].log.log1.getY());																														
 					win.drawImage(woodMedium, null, (int) lanes[i].log.log3.getX(), (int) lanes[i].log.log3.getY());
 					win.drawImage(woodLarge, null, (int) lanes[i].log.log2.getX(), (int) lanes[i].log.log2.getY());
 				}
 
-				if (lanes[i].laneType == 2 && lanes[i].mainCar.carDirection == 0 && lanes[i].mainCar.carType == 0) { 																													
+				//Draw different cars
+				if (lanes[i].laneType == 2 && lanes[i].mainCar.carDirection == UP_DIRECTION && lanes[i].mainCar.carType == FAST_CAR) { 																													
 					win.drawImage(carSmallUp, null, (int) lanes[i].mainCar.car1.getX(),
 							(int) lanes[i].mainCar.car1.getY());
 					win.drawImage(carSmallUp, null, (int) lanes[i].mainCar.car2.getX(),
 							(int) lanes[i].mainCar.car2.getY());
 				}
-
-				if (lanes[i].laneType == 2 && lanes[i].mainCar.carDirection == 1 && lanes[i].mainCar.carType == 0) {
+				if (lanes[i].laneType == 2 && lanes[i].mainCar.carDirection == DOWN_DIRECTION && lanes[i].mainCar.carType == FAST_CAR) {
 					win.drawImage(carSmallDown, null, (int) lanes[i].mainCar.car1.getX(),
 							(int) lanes[i].mainCar.car1.getY());
 					win.drawImage(carSmallDown, null, (int) lanes[i].mainCar.car2.getX(),
 							(int) lanes[i].mainCar.car2.getY());
 				}
-
-				if (lanes[i].laneType == 2 && lanes[i].mainCar.carDirection == 0 && lanes[i].mainCar.carType == 1) {
+				if (lanes[i].laneType == 2 && lanes[i].mainCar.carDirection == UP_DIRECTION && lanes[i].mainCar.carType == TRUCK_CAR) {
 					win.drawImage(truckUp, null, (int) lanes[i].mainCar.car1.getX() - 10,
 							(int) lanes[i].mainCar.car1.getY());
 					win.drawImage(truckUp, null, (int) lanes[i].mainCar.car2.getX() - 10,
 							(int) lanes[i].mainCar.car2.getY());
 				}
-				if (lanes[i].laneType == 2 && lanes[i].mainCar.carDirection == 1 && lanes[i].mainCar.carType == 1) {
+				if (lanes[i].laneType == 2 && lanes[i].mainCar.carDirection == DOWN_DIRECTION && lanes[i].mainCar.carType == TRUCK_CAR) {
 					win.drawImage(truckDown, null, (int) lanes[i].mainCar.car1.getX() - 10,
 							(int) lanes[i].mainCar.car1.getY());
 					win.drawImage(truckDown, null, (int) lanes[i].mainCar.car2.getX() - 10,
 							(int) lanes[i].mainCar.car2.getY());
 				}
-
 			}
 
 			win.fill(backgroundScore); // fills bottom of screen
@@ -161,9 +172,10 @@ public class froggerComp extends GameDriverV3 implements KeyListener {
 
 			win.setColor(Color.black);
 			win.drawLine(0, 700, 1830, 700);
+			
+			//Different direction of frogs
 			if (mainFrog.right) {
-				win.drawImage(frogSpriteRight, null, (int) mainFrog.getX(), (int) mainFrog.getY() - 25); // drawing frog
-																											// right
+				win.drawImage(frogSpriteRight, null, (int) mainFrog.getX(), (int) mainFrog.getY() - 25); 																					
 			}
 			if (mainFrog.left) {
 				win.drawImage(frogSpriteLeft, null, (int) mainFrog.getX(), (int) mainFrog.getY() - 25);
@@ -174,14 +186,16 @@ public class froggerComp extends GameDriverV3 implements KeyListener {
 			if (mainFrog.down) {
 				win.drawImage(frogSpriteDown, null, (int) mainFrog.getX(), (int) mainFrog.getY());
 			}
-
+			
+			//Ran out of lives
 			if (mainFrog.lives == 0) {
-				gameState = 3;
+				gameState = STATE_DEATH;
 			}
 
 		}
 
-		if (gameState == 2) { // instruction screen
+		//Instruction screen
+		if (gameState == STATE_INSTRUCTION) { 
 			win.setFont(impactSmaller);
 			win.setColor(Color.green);
 			win.fill(background);
@@ -195,7 +209,7 @@ public class froggerComp extends GameDriverV3 implements KeyListener {
 		}
 
 		// Death screen
-		if (gameState == 3) {
+		if (gameState == STATE_DEATH) {
 			win.setColor(Color.red);
 			win.fill(background);
 			win.fill(backgroundScore);
@@ -211,34 +225,38 @@ public class froggerComp extends GameDriverV3 implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		if (e.getKeyCode() == KeyEvent.VK_ENTER) { // changes lanes when pressing enter
+		//Start game
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) { 
 			start();
 		}
-
+		
+		//Read instructions
 		if (e.getKeyCode() == KeyEvent.VK_I) {
-			gameState = 2;
+			gameState = STATE_INSTRUCTION;
 		}
-
+		
+		//Go to home page
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			gameState = 0;
+			gameState = STATE_HOME;
 		}
-
-		if (mainFrog.getX() > 1600 && !mainFrog.madeAcross && e.getKeyCode() == KeyEvent.VK_RIGHT) { // changes map
+		
+		//Change map after reaching right side
+		if (mainFrog.getX() > 1600 && !mainFrog.madeAcross && e.getKeyCode() == KeyEvent.VK_RIGHT) {
 
 			for (int i = 0; i < 16; i++) {
 				lanes[i].laneType = randomizer.nextInt(3);
 			}
-
 		}
-
-		if (mainFrog.getX() < 200 && mainFrog.madeAcross && e.getKeyCode() == KeyEvent.VK_LEFT) { // changes map //
-																									// once across map
+		
+		//Changes map after reaching left side
+		if (mainFrog.getX() < 200 && mainFrog.madeAcross && e.getKeyCode() == KeyEvent.VK_LEFT) { 															
 			for (int i = 0; i < 16; i++) {
 				lanes[i].laneType = randomizer.nextInt(3);
 			}
 		}
-
-		if (mainFrog.resetNum > 0 && e.getKeyCode() == KeyEvent.VK_BACK_SPACE) { // reset powerup
+		
+		//Reset map powerup
+		if (mainFrog.resetNum > 0 && e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
 			for (int i = 0; i < 16; i++) {
 				lanes[i].laneType = randomizer.nextInt(3);
 			}
