@@ -126,21 +126,21 @@ public class froggerComp extends GameDriverV3 implements KeyListener {
 					win.drawImage(woodLarge, null, (int)lanes[i].main.log.getX(), (int)lanes[i].main.log.getY());
 				}
 				
-				if(lanes[i].decide == 2 && lanes[i].mainCar.direction == 0&& lanes[i].mainCar.type == 0) {			//drawing cars
+				if(lanes[i].decide == 2 && lanes[i].mainCar.carDirection == 0&& lanes[i].mainCar.carType == 0) {			//drawing cars
 					win.drawImage(carSmallUp, null, (int)lanes[i].mainCar.car1.getX(), (int)lanes[i].mainCar.car1.getY());
 					win.drawImage(carSmallUp, null, (int)lanes[i].mainCar.car2.getX(), (int)lanes[i].mainCar.car2.getY());
 				}
 				
-				if(lanes[i].decide == 2 && lanes[i].mainCar.direction == 1 && lanes[i].mainCar.type == 0) {
+				if(lanes[i].decide == 2 && lanes[i].mainCar.carDirection == 1 && lanes[i].mainCar.carType == 0) {
 					win.drawImage(carSmallDown, null, (int)lanes[i].mainCar.car1.getX(), (int)lanes[i].mainCar.car1.getY());
 					win.drawImage(carSmallDown, null, (int)lanes[i].mainCar.car2.getX(), (int)lanes[i].mainCar.car2.getY());
 				}
 				
-				if(lanes[i].decide == 2 && lanes[i].mainCar.direction == 0 && lanes[i].mainCar.type == 1) {
+				if(lanes[i].decide == 2 && lanes[i].mainCar.carDirection == 0 && lanes[i].mainCar.carType == 1) {
 					win.drawImage(truckUp, null, (int)lanes[i].mainCar.car1.getX() - 10, (int)lanes[i].mainCar.car1.getY());
 					win.drawImage(truckUp, null, (int)lanes[i].mainCar.car2.getX() - 10, (int)lanes[i].mainCar.car2.getY());
 				}
-				if(lanes[i].decide == 2 && lanes[i].mainCar.direction == 1 && lanes[i].mainCar.type == 1) {
+				if(lanes[i].decide == 2 && lanes[i].mainCar.carDirection == 1 && lanes[i].mainCar.carType == 1) {
 					win.drawImage(truckDown, null, (int)lanes[i].mainCar.car1.getX() - 10, (int)lanes[i].mainCar.car1.getY());
 					win.drawImage(truckDown, null, (int)lanes[i].mainCar.car2.getX() - 10, (int)lanes[i].mainCar.car2.getY());
 				}
