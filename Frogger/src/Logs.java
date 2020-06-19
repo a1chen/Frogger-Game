@@ -3,108 +3,112 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 public class Logs extends Rectangle {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	static final int UP_DIRECTION = 0;
+	static final int DOWN_DIRECTION = 1;
+	
 	int dx = 0, dy = 0;
-	frog main;
-	Rectangle log, log2, logMain;
+	frog frog;
+	Rectangle log1,log2, log3;
 	Boolean show2nd = false, show3rd = false;
 	int direction;
 
 	public Logs(int xPos, frog x, int speed, int directionY) {
-		if (directionY == 1) {
-			logMain = new Rectangle(xPos, -200, 50, 125);
-			log = new Rectangle(xPos, -200, 50, 175);
-			log2 = new Rectangle(xPos, -200, 50, 150);
+		if (directionY == UP_DIRECTION) {
+			log1 = new Rectangle(xPos, -200, 50, 125);
+			log2 = new Rectangle(xPos, -200, 50, 175);
+			log3 = new Rectangle(xPos, -200, 50, 150);
 			speed *= -1;
 		} else {
-			logMain = new Rectangle(xPos, 700, 50, 125);
-			log = new Rectangle(xPos, 700, 50, 175);
-			log2 = new Rectangle(xPos, 700, 50, 150);
+			log1 = new Rectangle(xPos, 700, 50, 125);
+			log2 = new Rectangle(xPos, 700, 50, 175);
+			log3 = new Rectangle(xPos, 700, 50, 150);
 		}
 		dy = speed;
 		direction = directionY;
-		main = x;
+		frog = x;
 
 	}
 
 	public void draws(Graphics2D win) {
 		win.setColor(Color.darkGray);
-		logMain.translate(dx, dy);
-		win.fill(logMain);
-		win.fill(log);
+		log1.translate(dx, dy);
+		win.fill(log1);
 		win.fill(log2);
-
-		if (direction == 0) { // logs moving upward
-			if (logMain.getY() < 400) { // toggles whether or not to show log
+		win.fill(log3);
+		
+		//Moving downwards
+		if (direction == DOWN_DIRECTION) { 
+			//Decides when to show each log on screen
+			if (log1.getY() < 400) { 
 				show2nd = true;
 			}
-			if (log.getY() < 400) {
+			if (log2.getY() < 400) {
 				show3rd = true;
 			}
-
-			if (show2nd) { // moves logs when show is true
-				log.translate(dx, dy);
-			}
-			if (show3rd) {
+			if (show2nd) {
 				log2.translate(dx, dy);
 			}
-
-			if (logMain.getY() + logMain.getHeight() < 0) {
-				logMain.setLocation((int) logMain.getX(), 700); // send main log back
+			if (show3rd) {
+				log3.translate(dx, dy);
 			}
-
-			if (log.getY() + log.getHeight() < 0) {
-				log.setLocation((int) log.getX(), 700); // send second log back
+			
+			//Send first logs back after off screen
+			if (log1.getY() + log1.getHeight() < 0) {
+				log1.setLocation((int) log1.getX(), 700); 
+			}
+			if (log2.getY() + log2.getHeight() < 0) {
+				log2.setLocation((int) log2.getX(), 700); 
 				show2nd = false;
 			}
-
-			if (log2.getY() + log2.getHeight() < 0) {
-				log2.setLocation((int) log2.getX(), 700); // send third log back
+			if (log3.getY() + log3.getHeight() < 0) {
+				log3.setLocation((int) log3.getX(), 700);
 				show3rd = false;
 			}
 		}
 
-		if (direction == 1) { // moving downward
-			if (logMain.getY() + logMain.getHeight() > 300) { // toggles whether or not to show log
+		//Moving upwards
+		if (direction == UP_DIRECTION) {
+			//Decides when to show logs
+			if (log1.getY() + log1.getHeight() > 300) {
 				show2nd = true;
 			}
-			if (log.getY() + log.getHeight() > 300) {
+			if (log2.getY() + log2.getHeight() > 300) {
 				show3rd = true;
 			}
-
-			if (show2nd) { // moves logs when show is true
-				log.translate(dx, dy);
-			}
-			if (show3rd) {
+			
+			//Decides when to move logs
+			if (show2nd) {
 				log2.translate(dx, dy);
 			}
-
-			if (logMain.getY() > 700) {
-				logMain.setLocation((int) logMain.getX(), -200); // send main log back
+			if (show3rd) {
+				log3.translate(dx, dy);
 			}
 
-			if (log.getY() > 700) {
-				log.setLocation((int) log.getX(), -200); // send second log back
-				show2nd = false;
+			//Moves logs back to beginning once logs is off screen
+			if (log1.getY() > 700) {
+				log1.setLocation((int) log1.getX(), -200);
 			}
 
 			if (log2.getY() > 700) {
-				log2.setLocation((int) log2.getX(), -200); // send third log back
+				log2.setLocation((int) log2.getX(), -200);
+				show2nd = false;
+			}
+
+			if (log3.getY() > 700) {
+				log3.setLocation((int) log3.getX(), -200);
 				show3rd = false;
 			}
 		}
 
-		if (logMain.intersects(main)) {
-			main.translate(dx, dy); // moves frog with the main log
+		//If frog is on log, moves frog with the log
+		if (log1.intersects(frog)) {
+			frog.translate(dx, dy);
 		}
-		if (log.intersects(main)) {
-			main.translate(dx, dy); // moves frog with the log
+		if (log2.intersects(frog)) {
+			frog.translate(dx, dy);
 		}
-		if (log2.intersects(main)) {
-			main.translate(dx, dy); // moves frog with the log2
+		if (log3.intersects(frog)) {
+			frog.translate(dx, dy);
 		}
 
 	}

@@ -113,7 +113,7 @@ public class frog extends Rectangle implements KeyListener {
 	}
 
 	public boolean onLog(Logs mainLog) {
-		if (this.intersects(mainLog.log) || this.intersects(mainLog.log2) || this.intersects(mainLog.logMain)) {
+		if (this.intersects(mainLog.log2) || this.intersects(mainLog.log3) || this.intersects(mainLog.log1)) {
 			return true;
 		}
 		return false;
